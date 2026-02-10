@@ -28,7 +28,7 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 1. Clone this repository:
 ```bash
-    git clone https://github.com/yourusername/discord-music-bot.git
+    git clone https://github.com/littlecommandcat/discord-music-bot.git
     cd discord-music-bot
 ```
 
@@ -76,6 +76,14 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 > The bot will automatically join your voice channel, search for the track, and play it.
 
+/disconnect <query> - Disconnect from your current voice channel
+
+- Example:
+
+    /disconnect
+
+> The bot will automatically disconnect from your voice channel.
+
 ---
 
 ## Notes
@@ -95,4 +103,5 @@ This project is licensed under **GPL-3.0 License**. See LICENSE for details.
 ## Author
 
 - littlecommandcat
+- README.md edit by ChatGPT
 - GitHub: https://github.com/littlecommandcat
