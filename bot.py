@@ -37,7 +37,7 @@ class Bot(commands.Bot):
 bot = Bot()
 
 @bot.tree.command(name='play', description='play music')
-async def play(interaction, query: str):
+async def play(interaction: discord.Interaction, query: str):
     # Connect to voice channel
     if not interaction.user.voice:
         return await interaction.response.send_message("You need to be in a voice channel!")
@@ -54,6 +54,14 @@ async def play(interaction, query: str):
     track = results[0]
     await player.play(track)
     await interaction.response.send_message(f"Now playing: **{track.title}**")
+
+@bot.tree.command(name='disconnect', description='disconnect voice')
+async def disconnect(interaction: discord.Interaction):
+    if not interaction.guild.voice_client:
+        return await interaction.response.send_message("I'm not in a voice channel.")
+    
+    await interaction.guild.voice_client.disconnect(force=True)
+    await interaction.response.send_message("I'm now leaving the voice channel.")
 
 
 bot.run('TOKEN')  # Put your bot token here
