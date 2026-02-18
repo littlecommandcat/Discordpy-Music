@@ -76,13 +76,42 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 > The bot will automatically join your voice channel, search for the track, and play it.
 
-/disconnect <query> - Disconnect from your current voice channel
+/disconnect - Disconnect from your current voice channel
 
 - Example:
 
     /disconnect
 
 > The bot will automatically disconnect from your voice channel.
+
+/queue - Show the current play queue
+
+- Example:
+
+    /queue
+
+> Displays a list of all tracks currently waiting to be played. If the queue is empty, the bot will notify you.
+
+
+
+/loop - Toggle loop mode for the queue
+
+- Example:
+
+    /loop
+
+> Switches the loop mode on or off. When enabled, songs that finish playing are added back to the end of the queue for endless music.
+
+
+
+/lyrics - Fetch and display lyrics for the current song
+
+- Example:
+
+    /lyrics
+
+> Searches for lyrics matching the currently playing track. The results are displayed with timestamps if available from the node.
+
 
 ---
 
