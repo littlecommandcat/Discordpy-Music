@@ -52,7 +52,7 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 ## Configuration
 
-- Replace your bot token in `bot.start('TOKEN')` like `bot.start('MjM5Nzg1MjM3Njg2MTU0MTg.XzR7oe.zMwvrTxh6BKoxsOvRhaUbZwuN5Y')`
+- Replace your bot token in `bot.start('TOKEN')`
 - Optionally, modify Lavalink node settings in `on_ready()`:
 ```
     host='localhost'
@@ -111,7 +111,7 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 - You must be in a voice channel to use the /play command.
 - Supports Lavalink plugins (lyrics, search) if enabled.
-- Ensure Lavalink node is running before starting the bot.
+- Ensure Lavalink/Nodelink node is running before starting the bot.
 
 ---
 
