@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+import asyncio
 import lava_lyra
 
 # Set CustomPlayer
@@ -8,21 +9,16 @@ class CustomPlayer(lava_lyra.Player):
     def __init__(self, client, channel, *, node = None):
         super().__init__(client, channel, node=node)
         self.queue = lava_lyra.Queue() # Set lavalyra queue
-        self.loop_mode = True # Set custom loop mode
-        self.current_index = 0 # Set index for custom loop mode
 
     async def play_next(self):
         # Play next song in the queue
         if self.queue.is_empty:
             return
         
-        # Get next track from queue
-        track = self.queue.pop() 
-
-        if self.loop_mode:
-            # Re-queue the track if loop is enabled
-            self.queue.put(track)
-
+        # Get next track
+        track = self.queue.get()
+        
+        # Play the track
         await self.play(track)
 
 class EventHandler(commands.Cog):
@@ -30,59 +26,59 @@ class EventHandler(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_lyra_node_connected(self, node_id, is_nodelink, reconnect):
+    async def on_lyra_node_connected(self, node_id: str, is_nodelink: bool, reconnect: bool):
         # Nodelink/Lavalink connected event
         print(f'{node_id}: Nodelink({is_nodelink}) reconnect({reconnect})')
 
     @commands.Cog.listener()
-    async def on_lyra_node_disconnected(self, node_id, is_nodelink, player_count):
+    async def on_lyra_node_disconnected(self, node_id: str, is_nodelink: bool, player_count: int):
         # Nodelink/Lavalink disconnected event
         print(f'{node_id}: Nodelink({is_nodelink}) playercount({player_count})')
 
     @commands.Cog.listener()
-    async def on_lyra_node_reconnecting(self, node_id, is_nodelink, retry_in):
+    async def on_lyra_node_reconnecting(self, node_id: str, is_nodelink: bool, retry_in: float):
         # Nodelink/Lavalink reconnected event
         print(f'{node_id}: Nodelink({is_nodelink}) retry in {retry_in}s')
 
     @commands.Cog.listener()
-    async def on_lyra_websocket_closed(self, payload):
+    async def on_lyra_websocket_closed(self, payload: lava_lyra.WebSocketClosedPayload):
         # Nodelink/Lavalink websocket closed event
         pass
     
     @commands.Cog.listener()
-    async def on_lyra_websocket_open(self, target, ssrc):
+    async def on_lyra_websocket_open(self, target: str, ssrc: int):
         # Nodelink/Lavalink websocket opened event
         pass
 
     @commands.Cog.listener()
-    async def on_lyra_track_start(self, player, track):
+    async def on_lyra_track_start(self, player: CustomPlayer, track: lava_lyra.Track):
         # Nodelink/Lavalink track start event
         print(f'Start playing track: {track.title}')
 
     @commands.Cog.listener()
-    async def on_lyra_track_end(self, player, track, reason):
+    async def on_lyra_track_end(self, player: CustomPlayer, track: lava_lyra.Track, reason: str):
         # Nodelink/Lavalink track end event
         print(f'End playing track: {track.title}.Reason: {reason}')
         # Play next song by using CustomPlayer
         await player.play_next()
 
     @commands.Cog.listener()
-    async def on_lyra_track_stuck(self, player, track, threshold):
+    async def on_lyra_track_stuck(self, player: CustomPlayer, track: lava_lyra.Track, threshold: float):
         # Lavalink track stucked event
         print(f'Player stucked. Wait for {threshold}s.')
 
     @commands.Cog.listener()
-    async def on_lyra_track_exception(self, player, track, error):
+    async def on_lyra_track_exception(self, player: CustomPlayer, track: lava_lyra.Track, error: lava_lyra.TrackExceptionEvent):
         # Nodelink/Lavalink track exception event
         print(f'Track exception: {error}.')
 
     @commands.Cog.listener()
-    async def on_lyra_lyrics_found(self, player, track, lyrics):
+    async def on_lyra_lyrics_found(self, player: CustomPlayer, track: lava_lyra.Track, lyrics: lava_lyra.Lyrics):
         # Successfully found lyrics event
-        print(f"Lyrics found for {track.title}: {len(lyrics)} lines")
+        print(f"Lyrics found for {track.title}: {len(lyrics.lines)} lines")
 
     @commands.Cog.listener()
-    async def on_lyra_lyrics_unavailable(self, player, track):
+    async def on_lyra_lyrics_unavailable(self, player: CustomPlayer, track:lava_lyra.Track):
         # Lyrics not available event
         print(f"No lyrics available for {track.title}")
 
@@ -112,10 +108,12 @@ class Music(commands.Cog):
         if not results:
             return await interaction.response.send_message("No tracks found!")
         
+        # Get first track
         track = results[0]
+
+        # Put the track into queue
+        player.queue.put(track)
         if player.is_playing:
-            # Put the track into queue
-            player.queue.put(track)
             return await interaction.response.send_message(f"Add **{track.title}** to play queue")
         else:
             # Play the track directly
@@ -129,7 +127,10 @@ class Music(commands.Cog):
             return await interaction.response.send_message("I'm not in a voice channel.")
         
         # Disconnect from current voice channel
-        await interaction.guild.voice_client.disconnect(force=True)
+        if isinstance(interaction.guild.voice_client, CustomPlayer):
+            await interaction.guild.voice_client.destroy()
+        else:
+            await interaction.guild.voice_client.disconnect(force=True)
         await interaction.response.send_message("I'm now leaving the voice channel.")
 
     @app_commands.command(name='queue', description='show play queue')
@@ -203,9 +204,53 @@ class Music(commands.Cog):
             return await interaction.response.send_message("I'm not playing any music.")
         
         # Toggle loop mode status
-        player.loop_mode = not player.loop_mode
+        current_mode = player.queue.loop_mode
+        if current_mode == lava_lyra.LoopMode.TRACK:
+            player.queue.set_loop_mode(lava_lyra.LoopMode.QUEUE)
+            
+        elif current_mode == lava_lyra.LoopMode.QUEUE:
+            player.queue.disable_loop()
+            
+        else:
+            player.queue.set_loop_mode(lava_lyra.LoopMode.TRACK)
 
-        return await interaction.response.send_message(f"Current loop mode: `{player.loop_mode}`")
+        return await interaction.response.send_message(f"Current loop mode: `{player.queue.loop_mode.name}`")
+    
+    @app_commands.command(name='shuffle', description='Shuffle play queue')
+    async def shuffle(self, interaction: discord.Interaction):
+        # Basic music player check
+        if not interaction.guild.voice_client:
+            return await interaction.response.send_message("I'm not in a voice channel.")
+        
+        if not isinstance(interaction.guild.voice_client, CustomPlayer):
+            return await interaction.response.send_message("I'm not a music player now.")
+        
+        player: CustomPlayer = interaction.guild.voice_client
+        if not player.is_playing:
+            return await interaction.response.send_message("I'm not playing any music.")
+        
+        # Suffle the play queue
+        player.queue.shuffle()
+
+        return await interaction.response.send_message(f"Shuffled the play queue.")
+    
+    @app_commands.command(name='volume', description='Set bot volume')
+    async def volume(self, interaction: discord.Interaction, volume: app_commands.Range[int, 1, 500]):
+        # Basic music player check
+        if not interaction.guild.voice_client:
+            return await interaction.response.send_message("I'm not in a voice channel.")
+        
+        if not isinstance(interaction.guild.voice_client, CustomPlayer):
+            return await interaction.response.send_message("I'm not a music player now.")
+        
+        player: CustomPlayer = interaction.guild.voice_client
+        if not player.is_playing:
+            return await interaction.response.send_message("I'm not playing any music.")
+        
+        # Set player volume
+        await player.set_volume(volume)
+
+        return await interaction.response.send_message(f"Set player volume `{volume}`.")
 
 class Bot(commands.Bot):
     def __init__(self):
@@ -242,5 +287,6 @@ class Bot(commands.Bot):
         await self.connect_nodes()
 
 # Run the bot
-bot = Bot()
-bot.run('TOKEN')
+if __name__ == '__main__':
+    bot = Bot()
+    asyncio.run(bot.start('TOKEN'))

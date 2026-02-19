@@ -28,8 +28,7 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 1. Clone this repository:
 ```bash
-    git clone https://github.com/littlecommandcat/discord-music-bot.git
-    cd discord-music-bot
+    git clone https://github.com/littlecommandcat/discordpy-music.git
 ```
 
 2. Install dependencies:
@@ -41,16 +40,19 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 > discord.py
 > lava-lyra
 
-3. Setup Lavalink server:
-- Download from Lavalink GitHub: https://github.com/freyacodes/Lavalink
-- Run with Java 17+
-- Default host: localhost, port: 2333, password: youshallnotpass
-
+3. Setup Music server:
+- Lavalink
+    - Download from Lavalink GitHub: https://github.com/freyacodes/Lavalink
+    - Run with Java 17+ (recommend running the latest LTS version or newer)
+    - Default host: localhost, port: 2333, password: youshallnotpass
+- Nodelink
+    - Download from Nodelink GitHub: https://github.com/PerformanC/NodeLink
+    - Run with Node.js v22 or higher (v24 recommended)
 ---
 
 ## Configuration
 
-- Replace your bot token in `bot.run('TOKEN')`
+- Replace your bot token in `bot.start('TOKEN')` like `bot.start('MjM5Nzg1MjM3Njg2MTU0MTg.XzR7oe.zMwvrTxh6BKoxsOvRhaUbZwuN5Y')`
 - Optionally, modify Lavalink node settings in `on_ready()`:
 ```
     host='localhost'
@@ -69,48 +71,38 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 ### Slash Command
 
 /play <query> - Play a song in your current voice channel
-
-- Example:
-
-    /play Never Gonna Give You Up
-
+- Example: `/play Never Gonna Give You Up`
 > The bot will automatically join your voice channel, search for the track, and play it.
 
+
 /disconnect - Disconnect from your current voice channel
+- Example: `/disconnect`
+> The bot will automatically disconnect from your voice channel and destroy the player.
 
-- Example:
-
-    /disconnect
-
-> The bot will automatically disconnect from your voice channel.
 
 /queue - Show the current play queue
-
-- Example:
-
-    /queue
-
-> Displays a list of all tracks currently waiting to be played. If the queue is empty, the bot will notify you.
-
+- Example: `/queue`
+> Displays a list of all tracks currently waiting to be played.
 
 
 /loop - Toggle loop mode for the queue
+- Example: `/loop`
+> Switches between: `TRACK` (repeat current), `QUEUE` (repeat list), or `DISABLED`.
 
-- Example:
 
-    /loop
+/shuffle - Shuffle the play queue
+- Example: `/shuffle`
+> Randomizes the order of tracks in the current queue.
 
-> Switches the loop mode on or off. When enabled, songs that finish playing are added back to the end of the queue for endless music.
 
+/volume <1-500> - Set bot volume
+- Example: `/volume 100`
+> Adjusts the playback volume of the bot.
 
 
 /lyrics - Fetch and display lyrics for the current song
-
-- Example:
-
-    /lyrics
-
-> Searches for lyrics matching the currently playing track. The results are displayed with timestamps if available from the node.
+- Example: `/lyrics`
+> Searches for lyrics matching the current track.
 
 
 ---
@@ -132,5 +124,4 @@ This project is licensed under **GPL-3.0 License**. See LICENSE for details.
 ## Author
 
 - littlecommandcat
-- README.md edit by ChatGPT
 - GitHub: https://github.com/littlecommandcat
