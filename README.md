@@ -20,6 +20,7 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 - Python 3.11+
 - discord.py
 - [lava-lyra](https://github.com/ParrotXray/lava-lyra)
+- [ExperimentalVersion](https://github.com/littlecommandcat/lava-lyra)
 - Lavalink or Nodelink server
 
 ---
@@ -28,15 +29,21 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 1. Clone this repository:
 ```bash
-    git clone https://github.com/littlecommandcat/discordpy-music.git
+git clone https://github.com/littlecommandcat/discordpy-music.git
 ```
 
 2. Install dependencies:
 ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-> Make sure requirements.txt includes:
+or
+
+```bash
+git clone https://github.com/littlecommandcat/lava-lyra.git
+```
+
+> Make sure requirements.txt includes (or use git clone):
 > discord.py
 > lava-lyra
 
@@ -52,17 +59,17 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 ## Configuration
 
-- Replace your bot token in `bot.start('TOKEN')` like `bot.start('MjM5Nzg1MjM3Njg2MTU0MTg.XzR7oe...')`
+- Replace your bot token in `bot.start('TOKEN')` like `bot.start('MTE5Nzg1MjM3Njg2MTU0MTg.XzR7oe...')`
 - Optionally, modify Lavalink node settings in `on_ready()`:
 ```
-    host='localhost'
-    port=2333
-    password='youshallnotpass'
-    secure=False
-    identifier='MAIN'
-    lyrics=False
-    search=True
-    fallback=True
+host='localhost'
+port=2333
+password='youshallnotpass'
+secure=False
+identifier='MAIN'
+lyrics=False
+search=True
+fallback=True
 ```
 ---
 
@@ -104,6 +111,17 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 - Example: `/lyrics`
 > Searches for lyrics matching the current track.
 
+/queue - Get the play queue.
+- Example: `/queue`
+> Sends back the play queue.
+
+/history - Get the play history.
+- Example: `/queue`
+> Sends back play history.
+> *If the lava-lyra <= 1.8.1, please use:
+> ```bash
+> git clone https://github.com/littlecommandcat/lava-lyra.git
+> ```
 
 ---
 
