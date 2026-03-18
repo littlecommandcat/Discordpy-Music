@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord import app_commands
 import asyncio
 import lava_lyra
-from importlib.metadata import version
 
 # Set CustomPlayer
 class CustomPlayer(lava_lyra.Player):
@@ -18,10 +17,6 @@ class CustomPlayer(lava_lyra.Player):
             # Set lavalyra track history
             # git clone https://github.com/littlecommandcat/lava-lyra.git (if lava-lyra release <= 1.8.1)
             return lava_lyra.Queue(max_history=10)
-
-    def auto_checker(self):
-        x, y, z = list(map(int, version('lava-lyra').split('.')))
-        return x, y, z
 
     async def play_next(self):
         # Play next song in the queue
