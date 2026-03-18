@@ -3,12 +3,25 @@ from discord.ext import commands
 from discord import app_commands
 import asyncio
 import lava_lyra
+from importlib.metadata import version
 
 # Set CustomPlayer
 class CustomPlayer(lava_lyra.Player):
     def __init__(self, client, channel, *, node = None):
         super().__init__(client, channel, node=node)
-        self.queue = lava_lyra.Queue() # Set lavalyra queue
+        self.queue = self.init_queue()
+        
+    def init_queue(self):
+        if not hasattr(lava_lyra.Queue(), 'max_history'):
+            return lava_lyra.Queue()
+        else:
+            # Set lavalyra track history
+            # git clone https://github.com/littlecommandcat/lava-lyra.git (if lava-lyra release <= 1.8.1)
+            return lava_lyra.Queue(max_history=10)
+
+    def auto_checker(self):
+        x, y, z = list(map(int, version('lava-lyra').split('.')))
+        return x, y, z
 
     async def play_next(self):
         # Play next song in the queue
@@ -251,6 +264,59 @@ class Music(commands.Cog):
         await player.set_volume(volume)
 
         return await interaction.response.send_message(f"Set player volume `{volume}`.")
+
+    @app_commands.command(name='queue', description='Show play queue')
+    async def queue(self, interaction: discord.Interaction):
+        # Basic music player check
+        if not interaction.guild.voice_client:
+            return await interaction.response.send_message("I'm not in a voice channel.")
+        
+        if not isinstance(interaction.guild.voice_client, CustomPlayer):
+            return await interaction.response.send_message("I'm not a music player now.")
+        
+        player: CustomPlayer = interaction.guild.voice_client
+        if player.queue.is_empty:
+            return await interaction.response.send_message('The play queue is empty.')
+
+        playqueue = player.queue.get_queue()
+        msg = ''
+        for i, track in enumerate(playqueue, 1):
+            msg += f'{i}. [{track.title}]({track.uri})\n'
+        
+        embed = discord.Embed(
+            title = f'Play Queue',
+            description = msg[:4000]
+        )
+
+        return await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name='history', description='Show play history')
+    async def history(self, interaction: discord.Interaction):
+        # Basic music player check
+        if not interaction.guild.voice_client:
+            return await interaction.response.send_message("I'm not in a voice channel.")
+        
+        if not isinstance(interaction.guild.voice_client, CustomPlayer):
+            return await interaction.response.send_message("I'm not a music player now.")
+        
+        player: CustomPlayer = interaction.guild.voice_client
+        if not hasattr(player.queue, 'max_history'):
+            return await interaction.response.send_message(f"Track history is not supported in this version.If the lava-lyra is the latest, try ```bat\ngit clone https://github.com/littlecommandcat/lava-lyra.git```")
+
+        history_tracks = player.queue.get_history()
+        msg = ''
+        for i, track in enumerate(history_tracks, 1):
+            msg += f'{i}. [{track.title}]({track.uri})\n'
+        
+        if not msg:
+            return await interaction.response.send_message(f"There track history is empty.")
+
+        embed = discord.Embed(
+            title = f'Track History',
+            description = msg[:4000]
+        )
+
+        return await interaction.response.send_message(embed=embed)
 
 class Bot(commands.Bot):
     def __init__(self):
