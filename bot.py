@@ -125,7 +125,7 @@ class Music(commands.Cog):
             return await interaction.response.send_message(f"Add **{track.title}** to play queue")
         else:
             # Play the track directly
-            await player.play(track)
+            await player.play_next()
             return await interaction.response.send_message(f"Now playing: **{track.title}**")
 
     @app_commands.command(name='disconnect', description='disconnect voice')
