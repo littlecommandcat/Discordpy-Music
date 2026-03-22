@@ -4,19 +4,33 @@ from discord import app_commands
 import asyncio
 import lava_lyra
 
+# Set CustomQueue
+class CustomQueue(lava_lyra.Queue):
+    def __init__(self, max_size = None, max_history = 0, *, overflow = True):
+        super().__init__(max_size, overflow=overflow)
+        self._history: list = []
+        self._max_history: int = max_history
+
+    def put_history(self, track: lava_lyra.Track):
+        if len(self._history) >= self._max_history:
+            if self._overflow:
+                raise lava_lyra.QueueFull('History is full.')
+            
+            self._history.pop(0)
+
+        self._history.append(track)
+
+    def clear_history(self):
+        return self._history.clear()
+    
+    def get_history(self):
+        return self._history
+
 # Set CustomPlayer
 class CustomPlayer(lava_lyra.Player):
     def __init__(self, client, channel, *, node = None):
         super().__init__(client, channel, node=node)
-        self.queue = self.init_queue()
-        
-    def init_queue(self):
-        if not hasattr(lava_lyra.Queue(), 'max_history'):
-            return lava_lyra.Queue()
-        else:
-            # Set lavalyra track history
-            # git clone https://github.com/littlecommandcat/lava-lyra.git (if lava-lyra release <= 1.8.1)
-            return lava_lyra.Queue(max_history=10)
+        self.queue = CustomQueue()
 
     async def play_next(self):
         # Play next song in the queue
@@ -25,7 +39,10 @@ class CustomPlayer(lava_lyra.Player):
         
         # Get next track
         track = self.queue.get()
-        
+
+        if not self.queue.loop_mode:
+            self.queue.put_history(track)
+
         # Play the track
         await self.play(track)
 
@@ -295,9 +312,7 @@ class Music(commands.Cog):
             return await interaction.response.send_message("I'm not a music player now.")
         
         player: CustomPlayer = interaction.guild.voice_client
-        if not hasattr(player.queue, 'max_history'):
-            return await interaction.response.send_message(f"Track history is not supported in this version.If the lava-lyra is the latest, try ```bat\ngit clone https://github.com/littlecommandcat/lava-lyra.git```")
-
+        
         history_tracks = player.queue.get_history()
         msg = ''
         for i, track in enumerate(history_tracks, 1):

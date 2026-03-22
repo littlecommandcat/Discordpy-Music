@@ -118,10 +118,6 @@ fallback=True
 /history - Get the play history.
 - Example: `/queue`
 > Sends back play history.
-> *If the lava-lyra <= 1.8.1, please use:
-> ```bash
-> git clone https://github.com/littlecommandcat/lava-lyra.git
-> ```
 
 ---
 
