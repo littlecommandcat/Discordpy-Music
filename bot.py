@@ -13,7 +13,7 @@ class CustomQueue(lava_lyra.Queue):
 
     def put_history(self, track: lava_lyra.Track):
         if len(self._history) >= self._max_history:
-            if self._overflow:
+            if not self._overflow:
                 raise lava_lyra.QueueFull('History is full.')
             
             self._history.pop(0)
