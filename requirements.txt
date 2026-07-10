@@ -1,2 +1,3 @@
 lava-lyra
 discord.py
+pynacl
