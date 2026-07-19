@@ -1,3 +1,4 @@
 lava-lyra
 discord.py
 pynacl
+python-dotenv

@@ -2,7 +2,26 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import asyncio
+import os
+from dotenv import load_dotenv
 import lava_lyra
+from lava_lyra.exceptions import (
+    NodeConnectionFailure,
+    NodeCreationError
+)
+
+# Get Basic Bot Info
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+PREFIX = os.getenv("PREFIX", "?")
+
+# Lavalink/Nodelink Configuration
+HOST = os.getenv("HOST", "localhost")
+PORT = int(os.getenv("PORT", 433))
+PASSWORD = os.getenv("PASSWORD", "youshallnotpass")
+SECURE = bool(os.getenv("SECURE", False))
+
+INTENTS = discord.Intents.default()
 
 # Set CustomQueue
 class CustomQueue(lava_lyra.Queue):
@@ -332,25 +351,30 @@ class Bot(commands.Bot):
     def __init__(self):
         # Setup bot intents
         super().__init__(
-            intents=discord.Intents.default(),
-            command_prefix='?'
+            intents=INTENTS,
+            command_prefix=PREFIX
         )
         self.pool = lava_lyra.NodePool()
 
     async def connect_nodes(self):
-        # Create Lavalink node with plugin supports
-        node: lava_lyra.Node = await self.pool.create_node(
-          bot=self,
-          host='localhost', 
-          port=2333, 
-          password='youshallnotpass', 
-          secure=False, 
-          identifier='MAIN', 
-          lyrics=True, # Enable LavaLyrics plugin support
-          search=True, # Enable LavaSearch plugin support
-          fallback=True, # Enable fallback node
-        )
-        print(f"Created node: {node._identifier}")
+        try:
+            # Create Lavalink node with plugin supports
+            node: lava_lyra.Node = await self.pool.create_node(
+            bot=self,
+            host=HOST, 
+            port=PORT, 
+            password=PASSWORD, 
+            secure=SECURE, 
+            identifier='MAIN', 
+            lyrics=True, # Enable LavaLyrics plugin support
+            search=True, # Enable LavaSearch plugin support
+            fallback=True, # Enable fallback node
+            )
+            print(f"Created node: {node._identifier}")
+        except NodeCreationError as error:
+            print(f"Node error while creating: {error}")
+        except NodeConnectionFailure as error:
+            print(f"Node error while connecting: {error}")
 
     async def on_ready(self):
         # Load cogs and sync slash commands
@@ -365,4 +389,4 @@ class Bot(commands.Bot):
 # Run the bot
 if __name__ == '__main__':
     bot = Bot()
-    asyncio.run(bot.start('TOKEN'))
+    asyncio.run(bot.start(TOKEN))

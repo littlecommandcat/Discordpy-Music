@@ -37,17 +37,11 @@ git clone https://github.com/littlecommandcat/discordpy-music.git
 pip install -r requirements.txt
 ```
 
-or
-
-```bash
-git clone https://github.com/littlecommandcat/lava-lyra.git
-```
-
 > Make sure requirements.txt includes (or use git clone):
 > discord.py
 > lava-lyra
 
-3. Setup Music server:
+3. Setup music server:
 - Lavalink
     - Download from Lavalink GitHub: https://github.com/freyacodes/Lavalink
     - Run with Java 17+ (recommend running the latest LTS version or newer)
@@ -57,15 +51,22 @@ git clone https://github.com/littlecommandcat/lava-lyra.git
     - Run with Node.js v22 or higher (v24 recommended)
 ---
 
-## Configuration
+4. Environment:
+```ini
+# Discord Bot Configuration
+TOKEN=""    # Discord bot token
+PREFIX=""   # Bot command prefix
 
-- Replace your bot token in `bot.start('TOKEN')` like `bot.start('MTE5Nzg1MjM3Njg2MTU0MTg.XzR7oe...')`
-- Optionally, modify Lavalink node settings in `on_ready()`:
+# Lavalink/Nodelink Configuration
+HOST=""     # Host
+PORT=433    # Port
+PASSWORD="" # Password
+SECURE=true # Enable https
 ```
-host='localhost'
-port=2333
-password='youshallnotpass'
-secure=False
+
+## Node Configuration
+
+```
 identifier='MAIN'
 lyrics=False
 search=True
