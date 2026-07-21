@@ -40,7 +40,7 @@ class EventHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_lyra_track_end(self, player: CustomPlayer, track: lava_lyra.Track, reason: str):
         # Nodelink/Lavalink track end event
-        print(f'End playing track: {track.title}.Reason: {reason}')
+        print(f'End playing track: {track.title}. Reason: {reason}')
         # Play next song by using CustomPlayer
         await player.play_next()
 

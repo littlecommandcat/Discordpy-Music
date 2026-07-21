@@ -38,12 +38,12 @@ class Music(commands.Cog):
 
         # Put the track into queue
         player.queue.put(track)
-        
+
         if player.is_playing:
             return await interaction.followup.send(f"Add **{track.title}** to play queue")
         else:
-            # Play the track directly
-            await player.play_next()
+            # Play the track with default volume
+            await player.play_next(volume=50)
             return await interaction.followup.send(f"Now playing: **{track.title}**")
 
     @app_commands.command(name='disconnect', description='disconnect voice')
@@ -52,12 +52,14 @@ class Music(commands.Cog):
         if not interaction.guild.voice_client:
             return await interaction.response.send_message("I'm not in a voice channel.")
         
+        await interaction.response.defer()
         # Disconnect from current voice channel
         if isinstance(interaction.guild.voice_client, CustomPlayer):
             await interaction.guild.voice_client.destroy()
         else:
             await interaction.guild.voice_client.disconnect(force=True)
-        await interaction.response.send_message("I'm now leaving the voice channel.")
+
+        await interaction.followup.send("I'm now leaving the voice channel.")
 
     @app_commands.command(name='queue', description='show play queue')
     async def queue(self, interaction: discord.Interaction):

@@ -77,7 +77,12 @@ class Bot(commands.Bot):
     async def on_close(self):
         super().on_close()
 
+# Define the main function
+async def main():
+    bot = Bot()
+    async with bot:
+        await bot.start(TOKEN)
+
 # Run the bot
 if __name__ == '__main__':
-    bot = Bot()
-    asyncio.run(bot.start(TOKEN))
+    asyncio.run(main())

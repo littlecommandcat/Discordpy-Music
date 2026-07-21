@@ -8,7 +8,7 @@ class CustomPlayer(lava_lyra.Player):
         self.queue = CustomQueue()
         self._last_track: lava_lyra.Track | None = None
 
-    async def play_next(self):
+    async def play_next(self, *, volume: int = None):
         # Play next song in the queue
         if self.queue.is_empty:
             return
@@ -16,6 +16,13 @@ class CustomPlayer(lava_lyra.Player):
         # Get next track
         track = self.queue.get()
         self._last_track = track
+
+        # First play
+        if volume:
+            await self.set_volume(min(100, max(0, volume)))
+            # Set loop mode before start playing
+            self.queue.set_loop_mode(lava_lyra.LoopMode.QUEUE)
+            
         if not self.queue.loop_mode:
             self.queue.put_history(track)
 
