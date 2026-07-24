@@ -8,6 +8,41 @@ class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @app_commands.command(name='nodes', description='nodes info')
+    async def nodes_info(self, interaction: discord.Interaction):
+        # Get lavalink/nodelink nodes
+        nodes = lava_lyra.NodePool._nodes
+        if not nodes:
+            return await interaction.response.send_message("Not connected to any nodes.")
+
+        embed = discord.Embed(
+            title = "Nodes",
+            description = ""
+        )
+
+        # Response defer
+        await interaction.response.defer()
+
+        # Get nodes
+        for nodeid, node in list(nodes.items())[:14]:
+
+            # Get node stats
+            stats = node.stats
+            
+            # Add node info
+            icon = "🟢" if node.is_connected else "🔴"
+            embed.add_field(
+                name = f"{icon} Node-{nodeid}",
+                value = f"""Uptime: `{stats.uptime}`
+Latency: `{round(node.latency, 2)}ms`
+HealthScore: `{round(node.health_score, 2)}`
+Players(active/total): `{stats.players_active}/{stats.players_total}`
+"""
+            )
+
+        # Followup defer
+        await interaction.followup.send(embed=embed)
+
     @app_commands.command(name='play', description='play music')
     async def play(self, interaction: discord.Interaction, query: str):
         # Connect to voice channel

@@ -7,7 +7,8 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 ## Features
 
-- Play music from multiple sources (YouTube, Spotify, Apple Music)
+- Play music from multiple sources (YouTube, Spotify, SoundCloud, Apple Music)
+- Display music streaming on bot presence (only for YouTube and Twitch)
 - Automatic node connection with Lavalink or Nodelink
 - Slash commands with Discord app_commands
 - Supports LavaLyrics and LavaSearch plugins
@@ -119,6 +120,10 @@ fallback=True
 /history - Get the play history.
 - Example: `/queue`
 > Sends back play history.
+
+/nodes - Get nodes info.
+- Example: `/nodes`
+> Sends back lavalink or nodelink nodes info.
 
 ---
 

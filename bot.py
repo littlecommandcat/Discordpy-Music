@@ -74,8 +74,6 @@ class Bot(commands.Bot):
         # Initialize node connections
         await self.connect_nodes()
 
-    async def on_close(self):
-        super().on_close()
 
 # Define the main function
 async def main():

@@ -64,5 +64,35 @@ class EventHandler(commands.Cog):
         # Lyrics not available event
         print(f"No lyrics available for {track.title}")
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
+        guild = member.guild
+        # Get voice client
+        voice_client = guild.voice_client
+
+        if not voice_client:
+            return
+
+        # Bot leaves the voice channel
+        if member.id == self.bot.user.id:
+            if before.channel is not None and after.channel is None:
+                if isinstance(voice_client, CustomPlayer):
+                    await voice_client.destroy()
+            return
+
+        # Bot is not connected to a voice channel
+        if not voice_client.channel:
+            return
+
+        client_channel = voice_client.channel
+
+        # Member leaves the bot's voice channel
+        if before.channel == client_channel and after.channel != client_channel:
+            if len(client_channel.members) == 1:
+                if isinstance(voice_client, CustomPlayer):
+                    await voice_client.destroy()
+                else:
+                    await voice_client.disconnect()
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(EventHandler(bot))
