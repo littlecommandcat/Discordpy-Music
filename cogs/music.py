@@ -89,6 +89,68 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
             await player.play_next(volume=50)
             return await interaction.followup.send(f"Now playing: **{track.title}**")
 
+    @app_commands.command(name="play-status", description="play member status music")
+    @app_commands.describe(member="member status to play")
+    async def play_member_status(self, interaction: discord.Interaction, member: discord.Member=None):
+        # Connect to voice channel
+        if not interaction.user.voice:
+            return await interaction.response.send_message(
+                "You need to be in a voice channel!"
+            )
+
+        # In voice channel but not CustomPlayer
+        if interaction.guild.voice_client and not isinstance(
+            interaction.guild.voice_client, CustomPlayer
+        ):
+            await interaction.guild.voice_client.disconnect(force=True)
+
+        if not interaction.guild.voice_client:
+            # Use CustomPlayer
+            player = await interaction.user.voice.channel.connect(cls=CustomPlayer)
+        else:
+            player = interaction.guild.voice_client
+
+        # Check presences intent
+        if not self.bot.intents.presences:
+            return await interaction.response.send_message("The presences intent is not set.")
+        
+        # Defer before response
+        await interaction.response.defer()
+
+        # Must get a member
+        member = member if isinstance(member, discord.Member) else interaction.user
+
+        # Get Sporify track url from activities
+        track_url = None
+        for activity in member.activities:
+            track_url = activity.track_url
+
+        if not track_url:
+            return await interaction.followup.send("Member is not listening to Spotify!")
+        
+        # Search for tracks (supports Spotify, YouTube, Apple Music via plugins!)
+        results = await player.get_tracks(track_url)
+
+        if not results:
+            return await interaction.followup.send("No tracks found!")
+
+        # Get first track
+        track = results[0]
+
+        # Put the track into queue
+        player.queue.put(track)
+
+        if player.is_playing:
+            return await interaction.followup.send(
+                f"Add **{track.title}** to play queue"
+            )
+        else:
+            # Set player home channel
+            player.home_channel = interaction.channel
+            # Play the track with default volume
+            await player.play_next(volume=50)
+            return await interaction.followup.send(f"Now playing: **{track.title}**")
+
     @app_commands.command(name="disconnect", description="disconnect voice")
     async def disconnect(self, interaction: discord.Interaction):
         # Check if voice client exists

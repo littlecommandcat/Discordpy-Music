@@ -21,12 +21,16 @@ PREFIX = os.getenv("PREFIX", "?")
 
 INTENTS = discord.Intents.default()
 INTENTS.message_content = True
+INTENTS.presences = True
+
+# Prevent mention roles or everyone
+ALLOWED_MENTIONS = discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=True)
 
 
 class Bot(commands.Bot):
     def __init__(self):
         # Setup bot intents
-        super().__init__(intents=INTENTS, command_prefix=PREFIX)
+        super().__init__(intents=INTENTS, command_prefix=PREFIX, allowed_mentions=ALLOWED_MENTIONS)
         self.pool = lava_lyra.NodePool()
 
     def load_lavalinks(self):
