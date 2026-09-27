@@ -56,7 +56,7 @@ class EventHandler(commands.Cog):
 
         if not current:
             return
-        
+
         # Update music info
         await player.update_message(content=f"Now playing: **{current.title}**")
 
@@ -119,7 +119,6 @@ class EventHandler(commands.Cog):
             and isinstance(voice_client, CustomPlayer)
         ):
             await voice_client.destroy()
-
 
 
 async def setup(bot: commands.Bot):
