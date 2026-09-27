@@ -91,7 +91,9 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
 
     @app_commands.command(name="play-status", description="play member status music")
     @app_commands.describe(member="member status to play")
-    async def play_member_status(self, interaction: discord.Interaction, member: discord.Member=None):
+    async def play_member_status(
+        self, interaction: discord.Interaction, member: discord.Member = None
+    ):
         # Connect to voice channel
         if not interaction.user.voice:
             return await interaction.response.send_message(
@@ -112,8 +114,10 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
 
         # Check presences intent
         if not self.bot.intents.presences:
-            return await interaction.response.send_message("The presences intent is not set.")
-        
+            return await interaction.response.send_message(
+                "The presences intent is not set."
+            )
+
         # Defer before response
         await interaction.response.defer()
 
@@ -126,8 +130,10 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
             track_url = activity.track_url
 
         if not track_url:
-            return await interaction.followup.send("Member is not listening to Spotify!")
-        
+            return await interaction.followup.send(
+                "Member is not listening to Spotify!"
+            )
+
         # Search for tracks (supports Spotify, YouTube, Apple Music via plugins!)
         results = await player.get_tracks(track_url)
 
