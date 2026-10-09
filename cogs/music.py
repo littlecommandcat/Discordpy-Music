@@ -301,7 +301,7 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
 
     @app_commands.command(name="volume", description="Set bot volume")
     async def volume(
-        self, interaction: discord.Interaction, volume: app_commands.Range[int, 1, 500]
+        self, interaction: discord.Interaction, volume: app_commands.Range[int, 1, 500] | None=None
     ):
         # Basic music player check
         if not interaction.guild.voice_client:
@@ -317,6 +317,10 @@ Players(active/total): `{stats.players_active}/{stats.players_total}`
         player: CustomPlayer = interaction.guild.voice_client
         if not player.is_playing:
             return await interaction.response.send_message("I'm not playing any music.")
+
+        # Return current volume
+        if volume is None:
+            return await interaction.response.send_message(f"Current player volume is {player.volume}")
 
         # Set player volume
         await player.set_volume(volume)

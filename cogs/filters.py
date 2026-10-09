@@ -38,6 +38,42 @@ class MusicFilters(commands.Cog):
 
         return player
 
+    @commands.command(name="filters")
+    @commands.guild_only()
+    async def filters(self, ctx: commands.Context):
+        """List all replied filters."""
+        player = await self.get_player(ctx)
+        if not player:
+            return
+
+        # Filters empty
+        if player.filters.empty:
+            return await ctx.send("No filters had applied")
+
+        self.music_embed.description = (
+            f"Filters enabled."
+        )
+
+        # Display filters
+        for f in player.filters.get_filters():
+            for key, value in f.payload.items():
+                display = ""
+                for n, d in value.items():
+                    display += f"{n}: {d}\n"
+
+                self.music_embed.add_field(
+                    name=key,
+                    value=display
+                )
+
+        self.music_embed.footer.text = (
+            f"`{self.bot.command_prefix}clearfilters` to disable filters"
+        )
+
+        await ctx.send(embed=self.music_embed)
+        self.music_embed.clear_fields()
+
+
     @commands.command(name="rotate")
     @commands.guild_only()
     async def set_rotate(self, ctx: commands.Context, hz: float = 2.0):
