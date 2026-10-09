@@ -50,9 +50,7 @@ class MusicFilters(commands.Cog):
         if player.filters.empty:
             return await ctx.send("No filters had applied")
 
-        self.music_embed.description = (
-            f"Filters enabled."
-        )
+        self.music_embed.description = "Filters enabled."
 
         # Display filters
         for f in player.filters.get_filters():
@@ -61,10 +59,7 @@ class MusicFilters(commands.Cog):
                 for n, d in value.items():
                     display += f"{n}: {d}\n"
 
-                self.music_embed.add_field(
-                    name=key,
-                    value=display
-                )
+                self.music_embed.add_field(name=key, value=display)
 
         self.music_embed.footer.text = (
             f"`{self.bot.command_prefix}clearfilters` to disable filters"
@@ -72,7 +67,6 @@ class MusicFilters(commands.Cog):
 
         await ctx.send(embed=self.music_embed)
         self.music_embed.clear_fields()
-
 
     @commands.command(name="rotate")
     @commands.guild_only()
