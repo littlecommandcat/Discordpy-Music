@@ -34,7 +34,7 @@ class Music(commands.Cog):
                 embed.add_field(
                     name=f"{icon} Node-{nodeid}",
                     value="Statistics unavailable",
-                    inline=True
+                    inline=True,
                 )
                 continue
 
@@ -45,13 +45,29 @@ class Music(commands.Cog):
             minutes, seconds = divmod(remainder, 60)
 
             # System load
-            cpu_process = f"{stats.cpu_process_load * 100:.2f}%" if stats.cpu_process_load is not None else "N/A"
-            cpu_system = f"{stats.cpu_system_load * 100:.2f}%" if stats.cpu_system_load is not None else "N/A"
+            cpu_process = (
+                f"{stats.cpu_process_load * 100:.2f}%"
+                if stats.cpu_process_load is not None
+                else "N/A"
+            )
+            cpu_system = (
+                f"{stats.cpu_system_load * 100:.2f}%"
+                if stats.cpu_system_load is not None
+                else "N/A"
+            )
 
             used = f"{stats.used / 1024**2:.2f} MB" if stats.used is not None else "N/A"
             free = f"{stats.free / 1024**2:.2f} MB" if stats.free is not None else "N/A"
-            allocated = f"{stats.allocated / 1024**2:.2f} MB" if stats.allocated is not None else "N/A"
-            reservable = f"{stats.reservable / 1024**2:.2f} MB" if stats.reservable is not None else "N/A"
+            allocated = (
+                f"{stats.allocated / 1024**2:.2f} MB"
+                if stats.allocated is not None
+                else "N/A"
+            )
+            reservable = (
+                f"{stats.reservable / 1024**2:.2f} MB"
+                if stats.reservable is not None
+                else "N/A"
+            )
 
             embed.add_field(
                 name=f"{icon} Node-{nodeid}",
@@ -67,7 +83,7 @@ Memory Free: `{free}`
 Memory Allocated: `{allocated}`
 Memory Reservable: `{reservable}`
 """,
-                inline=True
+                inline=True,
             )
 
         # Followup defer
