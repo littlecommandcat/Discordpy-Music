@@ -26,18 +26,48 @@ class Music(commands.Cog):
 
         # Get nodes
         for nodeid, node in list(nodes.items())[:14]:
-            # Get node stats
+            # Node status
             stats = node.stats
-
-            # Add node info
             icon = "🟢" if node.is_connected else "🔴"
+
+            if stats is None:
+                embed.add_field(
+                    name=f"{icon} Node-{nodeid}",
+                    value="Statistics unavailable",
+                    inline=True
+                )
+                continue
+
+            # Uptime
+            uptime = stats.uptime or 0
+            days, remainder = divmod(uptime // 1000, 86400)
+            hours, remainder = divmod(remainder, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+            # System load
+            cpu_process = f"{stats.cpu_process_load * 100:.2f}%" if stats.cpu_process_load is not None else "N/A"
+            cpu_system = f"{stats.cpu_system_load * 100:.2f}%" if stats.cpu_system_load is not None else "N/A"
+
+            used = f"{stats.used / 1024**2:.2f} MB" if stats.used is not None else "N/A"
+            free = f"{stats.free / 1024**2:.2f} MB" if stats.free is not None else "N/A"
+            allocated = f"{stats.allocated / 1024**2:.2f} MB" if stats.allocated is not None else "N/A"
+            reservable = f"{stats.reservable / 1024**2:.2f} MB" if stats.reservable is not None else "N/A"
+
             embed.add_field(
                 name=f"{icon} Node-{nodeid}",
-                value=f"""Uptime: `{stats.uptime}`
-Latency: `{round(node.latency, 2)}ms`
-HealthScore: `{round(node.health_score, 2)}`
+                value=f"""\
+Uptime: `{days}d {hours}h {minutes}m {seconds}s`
+Latency: `{node.latency:.2f}ms`
+HealthScore: `{node.health_score:.2f}`
 Players(active/total): `{stats.players_active}/{stats.players_total}`
+CPU(process/system): `{cpu_process}/{cpu_system}`
+CPU Cores: `{stats.cpu_cores}`
+Memory Used: `{used}`
+Memory Free: `{free}`
+Memory Allocated: `{allocated}`
+Memory Reservable: `{reservable}`
 """,
+                inline=True
             )
 
         # Followup defer
