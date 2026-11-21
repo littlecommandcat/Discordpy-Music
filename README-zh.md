@@ -26,10 +26,9 @@
 
 ## 系統需求
 
-- Python 3.12+（[`lava-lyra` >= 2.2.0](https://github.com/ParrotXray/lava-lyra/releases/tag/v2.2.1)）
+- Python 3.12+（[`lava-lyra` >= 2.2.0](https://github.com/ParrotXray/lava-lyra/releases/tag/v2.2.0)）
 - discord.py
 - [lava-lyra](https://github.com/ParrotXray/lava-lyra)
-- [ExperimentalVersion](https://github.com/littlecommandcat/lava-lyra)
 - Lavalink或Nodelink伺服器
 
 ---
@@ -242,14 +241,6 @@ PREFIX=""   # 機器人指令前綴
 
 ## 授權條款
 
-本專案採用 **GPL-3.0 License** 授權。
+本專案採用 [GPL-3.0 License](/LICENSE) 授權。
 
 詳細資訊請參閱LICENSE。
-
----
-
-## 作者
-
-- 翻譯採用ChatGPT
-- littlecommandcat
-- GitHub：https://github.com/littlecommandcat

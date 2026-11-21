@@ -25,10 +25,9 @@ Supports music playback from YouTube, Spotify, Apple Music, and more with Lavali
 
 ## Requirements
 
-- Python 3.12+（[`lava-lyra` >= 2.2.0](https://github.com/ParrotXray/lava-lyra/releases/tag/v2.2.1)）
+- Python 3.12+（[`lava-lyra` >= 2.2.0](https://github.com/ParrotXray/lava-lyra/releases/tag/v2.2.0)）
 - discord.py
 - [lava-lyra](https://github.com/ParrotXray/lava-lyra)
-- [ExperimentalVersion](https://github.com/littlecommandcat/lava-lyra)
 - Lavalink or Nodelink server
 
 ---
@@ -223,11 +222,4 @@ PREFIX=""   # Bot command prefix
 
 ## License
 
-This project is licensed under **GPL-3.0 License**. See LICENSE for details.
-
----
-
-## Author
-
-- littlecommandcat
-- GitHub: https://github.com/littlecommandcat
+This project is licensed under [GPL-3.0 License](/LICENSE). See LICENSE for details.
