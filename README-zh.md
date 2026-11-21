@@ -1,5 +1,9 @@
 # Discord 音樂機器人（LavaLyra）
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+[![Discord Bot](https://img.shields.io/badge/Discord-Bot-5865F2?logo=discord&logoColor=white)](https://discord.com/developers/applications)
+
 一個使用**discord.py**與**lava-lyra**的簡易 Discord 音樂機器人。
 
 支援透過 Lavalink/Nodelink從 YouTube、Spotify、Apple Music等多種來源播放音樂。

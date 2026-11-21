@@ -1,5 +1,9 @@
 # Discord Music Bot (LavaLyra)
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+[![Discord Bot](https://img.shields.io/badge/Discord-Bot-5865F2?logo=discord&logoColor=white)](https://discord.com/developers/applications)
+
 A simple Discord music bot using **discord.py** and **lava-lyra**.  
 Supports music playback from YouTube, Spotify, Apple Music, and more with Lavalink/Nodelink.
 
